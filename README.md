@@ -6,8 +6,13 @@ input.txt dosyasındaki verileri alıp birinci satırda soru sayısını, ikinci
 
 ## Teşekkürler
 #
+
 https://www.gencayyildiz.com/blog/node-js-i-o-islemleri/
+
 https://www.geeksforgeeks.org/node-js-split-function/
+
 https://www.w3schools.com/jsref/jsref_split.asp
+
 https://stackoverflow.com/a/21896652
+
 https://scetinkaya.com/javascript-isinteger-metodu-kullanimi/#more-328
