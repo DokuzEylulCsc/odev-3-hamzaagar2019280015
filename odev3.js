@@ -13,8 +13,8 @@ dosyaOkuYaz.readFile("input.txt", function (hata, dosyadanGelenVeri) {
     }
 
     var siralanmisDizi = dosyaOku(dosyadanGelenVeri);
-
-    dosyaYaz(siralanmisDizi);
+    if (dosyadanGelenVeri)
+        dosyaYaz(siralanmisDizi);
 
 })
 
@@ -30,21 +30,30 @@ function yuvarlamaFonksiyonu(karar, deger) {
 function dosyaOku(dosyadanGelenVeri) {
     //Dosyalan gelen veriyi String'e çevirip \n \r gibi ayraçları kontrol eden kütüphane yardımıyla parçalıyoruz
     var dizi = dosyadanGelenVeri.toString().split(isletimSistemiKutuphanesi.EOL);
-    //Oluşan yeni dizimizin verilerini , ile parçalıyoruz
-    for (i = 0; i < dizi.length; i++) {
-        dizi[i] = dizi[i].toString().split(",");
+    //Öğrenci sayısı kontrolü
+    if (dizi.length <= 102) {
+        //Oluşan yeni dizimizin verilerini , ile parçalıyoruz
+        for (i = 0; i < dizi.length; i++) {
+            dizi[i] = dizi[i].toString().split(",");
+        }
+
+        var siralanmisDizi = [];
+        //cevapKontrolFonksiyonu() ile cevapları cevap anahtarıyla karşılaştırıp puanları alıyoruz
+        //Fonksiyon içerisinde sıralanmış halde geliyor
+        siralanmisDizi = cevapKontrolFonksiyonu(dizi);
+        return siralanmisDizi;
+    } else {
+        console.log("Öğrenci sayısı 100 den fazla");
+        process.exit(-1);
     }
 
-    var siralanmisDizi = [];
-    //cevapKontrolFonksiyonu() ile cevapları cevap anahtarıyla karşılaştırıp puanları alıyoruz
-    //Fonksiyon içerisinde sıralanmış halde geliyor
-    siralanmisDizi = cevapKontrolFonksiyonu(dizi);
-    return siralanmisDizi;
 }
 
 function dosyaYaz(siralanmisDizi) {
+
     //Dosyaya yazılacak String'i oluşturuyoruz
     var yeniDosyayaYazilacakVeri = "";
+
     //For döngüsüyle String'e öğrenci numarası ve puanı yazdırıyoruz ve satır atlatıyoruz
     for (i = 0; i < siralanmisDizi.length; i++) {
         yeniDosyayaYazilacakVeri += siralanmisDizi[i]["ogrNO"] + "," + siralanmisDizi[i]["puan"] + "\n";
@@ -56,7 +65,7 @@ function dosyaYaz(siralanmisDizi) {
     //ortalamaHesapla() fonksiyonu ile ortalamayı veriyoruz
     yeniDosyayaYazilacakVeri += yuvarlamaFonksiyonu(yuvarlama, ortalamaHesapla(siralanmisDizi)) + ",";
     //medyaniBul() fonksiyonu ile medyanı veriyoruz
-    yeniDosyayaYazilacakVeri += medyaniBul(siralanmisDizi) + ",";
+    yeniDosyayaYazilacakVeri += yuvarlamaFonksiyonu(yuvarlama, medyaniBul(siralanmisDizi)) + ",";
     //Dizinin en büyük teriminden en küçük terimini çıkartıp açıklığı veriyoruz
     yeniDosyayaYazilacakVeri += (siralanmisDizi[0]["puan"] - siralanmisDizi[siralanmisDizi.length - 1]["puan"]);
     //Oluşturduğumuz String'i dosyaya yazdırıyoruz
@@ -109,6 +118,14 @@ function cevapKontrolFonksiyonu(cevaplar) {
                 siralanmisDizi.length -= 1;
             }
         }
+        //Puanı sıfırın altında olanları sıfır ile düzeltiyoruz
+        for (i = 0; i < siralanmisDizi.length; i++) {
+            if (siralanmisDizi[i]["puan"] > 0) {
+
+            } else {
+                siralanmisDizi[i]["puan"] = 0
+            }
+        }
         return siralanmisDizi;
     } else {
         console.log("Soru sayısı ve cevap anahtarındaki cevap sayısı eşit değil!\n");
@@ -129,7 +146,6 @@ function kabarcikSiralamaFonksiyonu(dizi) {
     }
     return yeniDizi;
 }
-
 
 function ortalamaHesapla(dizi) {
     //Toplam diye bir değişken oluşturup bu değişkene dizideki
